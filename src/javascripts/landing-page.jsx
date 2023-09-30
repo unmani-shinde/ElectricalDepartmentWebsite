@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import BackgroundImage from "./background-image.png";
 import DepartmentsSection from "./departments-section.png";
-import { all_departments } from "./database";
-import { Parallax } from "react-parallax";
-import { GoHomeFill } from "react-icons/go";
-import { Card } from "@chakra-ui/react";
+// import { all_departments } from "./database";
+// import { Parallax } from "react-parallax";
+// import { GoHomeFill } from "react-icons/go";
+// import { Card } from "@chakra-ui/react";
 import ReactTyped from "react-typed";
 import { useNavigate } from "react-router-dom";
 
@@ -51,9 +51,7 @@ function ElectDeptLandingPage() {
         }
       };
 
-      const viewVirtualLab = ()=>{
-
-      }
+      
       
 
 
@@ -84,7 +82,7 @@ function ElectDeptLandingPage() {
           }}
           
         >
-          <h2 style={{ fontSize: '25px',fontWeight:"700",paddingBottom:"1vh" }}>{item.toUpperCase()}</h2>
+          <h2 style={{ fontSize: '25px',fontWeight:"700",paddingBottom:"1vh",marginTop:'4vh' }}>{item.toUpperCase()}</h2>
           
         </li>
       ))}
@@ -93,7 +91,7 @@ function ElectDeptLandingPage() {
 
 
             <div id='home-section' style={{ width: '100%', height: '88vh', position: 'relative',marginTop:'11vh' }}>
-            <img src={BackgroundImage} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={BackgroundImage} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Text" />
             <h1 style={{ fontSize: '90px', marginTop: '-70vh', marginLeft: '2vw', color: '#088395', lineHeight: '13vh',zIndex:'5',letterSpacing:'1px' }}>
       The Department <br></br>of Electrical {" "}<ReactTyped strings={["Engineering"]} typeSpeed={100} backSpeed={200} loop />
     </h1>
@@ -219,7 +217,7 @@ function ElectDeptLandingPage() {
       display: 'flex', // Added display flex
       flexDirection: 'column', // Added flex direction
       alignItems: 'center', // Center horizontally
-      justifyContent: 'center', // Center vertically
+      
     }}
   >
     {isFlipped && index === activeDeptIndex ? (
@@ -258,14 +256,15 @@ function ElectDeptLandingPage() {
               width: '50%',
             }}
             onClick={() => {
-              const routeState = {
+              const route_state = {
                 engineeringIndex: activeDeptIndex,
               };
             
               const inputString = departments[activeDeptIndex];
               const convertedString = inputString.toLowerCase().replace(/\s+/g, '-');
             
-              nav(`/virtual-lab/${convertedString}`, { state: routeState });
+              // nav(`/virtual-lab/${convertedString}`);
+              nav(`/virtual-lab/${convertedString}`, { state: route_state });
             }}
             
           >

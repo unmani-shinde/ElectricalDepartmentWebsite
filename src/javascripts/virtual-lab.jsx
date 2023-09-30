@@ -1,101 +1,171 @@
-import React from 'react';
-import { Outlet, useLocation,useNavigate } from 'react-router-dom';
-import { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { all_departments } from './database';
 import { useParams } from 'react-router-dom';
+import { FaSearch  } from "react-icons/fa";
 
 
 function VirtualLabLandingPage() {
-  const departments = ['Electronics and Telecommunication', 'Electronics', 'Electrical'];
   const location = useLocation();
-  const engineeringIndex = location.state.engineeringIndex;
+  const { departmentName } = useParams();
+  const navigate = useNavigate();
+
+  // Extract engineeringIndex from location.state
+  const [engineeringIndex, setEngineeringIndex] = useState(location.state.engineeringIndex);
+
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
-  const [submitClicked,setSubmitClicked] = useState(false);
+  const [lab,setLab] = useState('');
+  const [years, setYears] = useState([]);
+  const [semesters, setSemesters] = useState([]);
+  const [semesterLabs,setSemesterLabs] = useState([]);
+  const [submitClicked, setSubmitClicked] = useState(false);
 
-  const navigate = useNavigate();
-  const {departmentName} = useParams();
+  function capitalizeWords(str) {
+    return str
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  // Effect to initialize years when engineeringIndex is available
+  useEffect(() => {
+    if (engineeringIndex >= 0) {
+      const yearNames = all_departments[engineeringIndex].years.map((yearObj) => yearObj.yearName);
+      setYears(yearNames);
+    }
+  }, [engineeringIndex]);
+
+  // Effect to update semesters when year changes
+  useEffect(() => {
+    if (engineeringIndex >= 0 && year !== '') {
+      const selectedYear = all_departments[engineeringIndex].years.find((yearObj) => yearObj.yearName === year);
+
+      if (selectedYear) {
+        const semesterNames = selectedYear.semesters.map((semesterObj) => semesterObj.semesterName);
+        setSemesters(semesterNames);
+      } else {
+        console.log(`Year "${year}" not found in department "${departmentName}"`);
+      }
+    }
+  }, [engineeringIndex, year, departmentName]);
+
+
+  useEffect(() => {
+    if (engineeringIndex >= 0 && year !== '' && semester !== '') {
+      const selectedLabs = all_departments[engineeringIndex].years
+        .find((yearObj) => yearObj.yearName === year)
+        .semesters.find((semesterObj) => semesterObj.semesterName === semester)?.labs || [];
+  
+      setSemesterLabs(selectedLabs);
+    }
+  }, [engineeringIndex, year, semester]);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(`Selected Year: ${year}`);
-    console.log(`Selected Semester: ${semester}`);
-    console.log(semester.split(" ")[1]);
-    console.log(departmentName);// Convert to lowercase and replace spaces with hyphens  
-    // Construct the relative path and print it for debugging
 
-    const relativePath = `../${year.toLowerCase().replace(/\s+/g, '-')}/${semester.toLowerCase().replace(/\s+/g, '-')}`;
-    console.log("Relative Path:", relativePath);
-  
-    // Define the route state
-    // const routeState = {
-    //   yearName: year,
-    //   semesterName: semester,
-    // };
-  
-    // Use the navigate function with the relative path
-    navigate(relativePath);
+    const routeState = {
+      engineeringIndex: engineeringIndex,
+      yearName: year,
+      semesterName: semester,
+      labName:lab
+    };
+
+    const fullPath = `/virtual-lab/${departmentName}/labs/`;
+    navigate(fullPath, { state: routeState });
+
     setSubmitClicked(true);
   };
-  
-  
-
-
-  
-  
-
 
   return (
-    <div style={{ display: 'flex', flexDirection:setSubmitClicked?'column':'row',justifyContent: 'center', alignItems: 'center', height: submitClicked?'14vh':'100vh' }}>
-  {/* <h1>This is the Page for {all_departments[engineeringIndex].name} Engineering.</h1> */}
-  <h2>Semester Selection</h2>
-      <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:submitClicked?'row':'column'}}>
-        <div>
-          <label htmlFor="year">Year:</label>
-          <select
-            id="year"
-            name="year"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-          >
-            
-            {all_departments[engineeringIndex].years.map((yearObj, index) => (
-        <option key={`year-${index}`}>{yearObj.yearName}</option>
-            ))}
 
-          </select>
-        </div>
-        <div>
-          <label htmlFor="semester">Semester:</label>
-          <select
-  id="semester"
-  name="semester"
-  value={semester}
-  onChange={(e) => setSemester(e.target.value)}
->
-  <option value="">Select a Semester</option>
-  {all_departments[engineeringIndex].years.map((yearObj, yearIndex) => {
-  if (yearObj.yearName === year) {
-    return yearObj.semesters.map((semester, semesterIndex) => (
-      <option key={`semester-${semesterIndex}`}>{semester.semesterName}</option>
-    ));
-  }
-  return null; // Return null for other years
-})}
-
-  
-</select>
-
-        </div>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-      <Outlet/>
+    <div className='card' style={{height:'96vh',width:'96vw',marginTop:'2vh',marginLeft:'2vw',border:'solid 1px black',alignSelf:'center',borderRadius:'20px'}}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <p style={{ marginTop:'1vh',marginBottom: '20px',fontSize:"xxx-large",fontWeight:'700' }}>{all_departments[engineeringIndex].name} Engineering Virtual Lab</p>
       
-</div>
+        
+        <div style={{display:'flex',flexDirection:'row',fontSize:'x-large',marginTop:'-1vh',marginBottom:'1vh'}}>
+          <div style={{display:'flex',flexDirection:'row'}}>
+            <label htmlFor="year" style={{marginRight:'1vw', fontWeight:"700",lineHeight:'3vh'}}>Select<br></br>Year:</label>
+            <select
+              id="year"
+              name="year"
+              value={year}
+              style={{fontSize:'x-large',marginRight:'2vw',width:'20vw',marginTop:'-0.5vh',paddingLeft:'0.5vw'}}
+              onChange={(e) => {
+                setYear(e.target.value);
+              }}
+            >
+              <option value=''>Select Year</option>
+              {years.map((yearName, index) => (
+                <option key={index} value={yearName}>
+                  {yearName}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div style={{display:'flex',flexDirection:'row'}}>
+            <label htmlFor="semester" style={{marginRight:'1vw',fontWeight:'700',lineHeight:'3vh'}}>Select <br></br>Semester:</label>
+            <select
+              id="semester"
+              name="semester"
+              value={semester}
+              style={{fontSize:'x-large',marginRight:'2vw',width:'20vw',marginTop:'-0.5vh',paddingLeft:'0.5vw'}}
+              onChange={(e) => setSemester(e.target.value)}
+            >
+              <option value="">Select a Semester</option>
+              {semesters.map((semesterName, index) => (
+                <option key={index} value={semesterName}>
+                  {semesterName}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          <div style={{display:'flex',flexDirection:'row'}}>
+          <label htmlFor="labs" style={{marginRight:'1vw',fontWeight:'700',lineHeight:'3vh'}}>Select <br></br>Lab:</label>
+          <select onChange={(e)=>{setLab(e.target.value)}} style={{fontSize:'x-large',width:'20vw',paddingLeft:'0.5vw',height:'7vh',marginTop:'-0.5vh'}}>
+        <option value=''>Select A Lab</option>
+        {semesterLabs.map((lab, index) => (
+            <option key={index} value={lab}>
+            {lab}
+            </option>
+        ))}
+        </select>
+          </div>
+
+
+          
+          <button
+  onClick={handleSubmit}
+  style={{
+    fontSize: 'x-large',
+    
+    fontWeight: '700',
+    marginLeft: '1vw',
+    paddingTop:'0.5vh',
+    width: '6vh', // Set the width to make it a square
+    height: '6vh', // Set the height to make it a square
+  }}
+>
+  <FaSearch />
+</button>
+
+          
+        </div>
+        <hr style={{width:'90%'}}></hr>
+      
+      <Outlet />
+    </div>
+
+
+
+    </div>
+
+
+
+    
   );
 }
 
