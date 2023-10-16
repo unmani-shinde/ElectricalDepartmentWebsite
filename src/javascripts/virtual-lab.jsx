@@ -3,15 +3,17 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { all_departments } from './database';
 import { useParams } from 'react-router-dom';
 import { FaSearch  } from "react-icons/fa";
-
+import { FcSearch } from "react-icons/fc";
 
 function VirtualLabLandingPage() {
   const location = useLocation();
   const { departmentName } = useParams();
   const navigate = useNavigate();
+  const engineeringIndex = location.state?.engineeringIndex;
 
   // Extract engineeringIndex from location.state
-  const [engineeringIndex, setEngineeringIndex] = useState(location.state.engineeringIndex);
+  
+  
 
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
@@ -64,7 +66,8 @@ function VirtualLabLandingPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(engineeringIndex);
+    console.log(all_departments[engineeringIndex].name)
     const routeState = {
       engineeringIndex: engineeringIndex,
       yearName: year,
@@ -80,9 +83,20 @@ function VirtualLabLandingPage() {
 
   return (
 
-    <div className='card' style={{height:'96vh',width:'96vw',marginTop:'2vh',marginLeft:'2vw',border:'solid 1px black',alignSelf:'center',borderRadius:'20px'}}>
+   
+    <div className='card' style={{
+      height: '96vh',
+      width: '96vw',
+      marginTop: '2vh',
+      marginLeft: '1.5vw',
+      alignSelf: 'center',
+      borderRadius: '20px',
+      border: 'solid 2px #247881',
+      boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+      background: 'linear-gradient(to right, #CDFFF0, #64CCC5)',
+    }}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <p style={{ marginTop:'1vh',marginBottom: '20px',fontSize:"xxx-large",fontWeight:'700' }}>{all_departments[engineeringIndex].name} Engineering Virtual Lab</p>
+      <p style={{ marginTop:'1vh',marginBottom: '20px',fontSize:"xxx-large",fontWeight:'700',color:"black",}}>{all_departments[engineeringIndex].name} Engineering Virtual Lab</p>
       
         
         <div style={{display:'flex',flexDirection:'row',fontSize:'x-large',marginTop:'-1vh',marginBottom:'1vh'}}>
@@ -92,7 +106,7 @@ function VirtualLabLandingPage() {
               id="year"
               name="year"
               value={year}
-              style={{fontSize:'x-large',marginRight:'2vw',width:'20vw',marginTop:'-0.5vh',paddingLeft:'0.5vw'}}
+              style={{fontSize:'x-large',marginRight:'2vw',width:'20vw',marginTop:'-0.5vh',paddingLeft:'0.5vw',}}
               onChange={(e) => {
                 setYear(e.target.value);
               }}
@@ -127,9 +141,9 @@ function VirtualLabLandingPage() {
           <label htmlFor="labs" style={{marginRight:'1vw',fontWeight:'700',lineHeight:'3vh'}}>Select <br></br>Lab:</label>
           <select onChange={(e)=>{setLab(e.target.value)}} style={{fontSize:'x-large',width:'20vw',paddingLeft:'0.5vw',height:'7vh',marginTop:'-0.5vh'}}>
         <option value=''>Select A Lab</option>
-        {semesterLabs.map((lab, index) => (
-            <option key={index} value={lab}>
-            {lab}
+        {semesterLabs.map((labObject, index) => (
+            <option key={index} value={labObject.labName}>
+            {labObject.labName}
             </option>
         ))}
         </select>
@@ -141,15 +155,18 @@ function VirtualLabLandingPage() {
   onClick={handleSubmit}
   style={{
     fontSize: 'x-large',
-    
+    cursor:'pointer',    
     fontWeight: '700',
     marginLeft: '1vw',
-    paddingTop:'0.5vh',
+    paddingTop:'0.75vh',
+    backgroundColor:'transparent',
+    border:'1px solid transparent',
+    borderRadius:'50%',
     width: '6vh', // Set the width to make it a square
     height: '6vh', // Set the height to make it a square
   }}
 >
-  <FaSearch />
+  <FcSearch style={{transform:'scale(2)'}} />
 </button>
 
           
@@ -162,6 +179,10 @@ function VirtualLabLandingPage() {
 
 
     </div>
+
+    
+
+    
 
 
 

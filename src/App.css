@@ -42,7 +42,31 @@
 	height: 60rem;
 }
 
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
 
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 5vw;
+  background-color:transparent;
+  margin-top: -1vh;
+  color: #247881;
+  border: solid 1px transparent;
+  font-weight: 700;
+  text-align: center;
+  padding-top: 0.5vh;
+  
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 
 
 .App-logo {

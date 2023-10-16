@@ -33,7 +33,7 @@ function ElectDeptLandingPage() {
 
     const menuTitles = ['home-section','about-section','departments-section','team-section']
     
-      const departments = ['Electronics & Telecommunication Engineering','Electronics Engineering','Electrical Engineering'];
+      const departments = ['Electronics and Telecommunication Engineering','Electronics Engineering','Electrical Engineering'];
       const departmentDescription = ['Electronics and Telecommunication Engineering is where the world connects and communicates. Dive into the realm of cutting-edge technologies, from mobile communication to signal processing, and become a part of shaping the digital future.','Explore the world of Electronics Engineering, where innovation sparks connections. Dive into circuits, devices, and technologies that power our digital future.','Welcome to Electrical Engineering, where energy transforms into possibilities. Discover the sparks of innovation that illuminate our world and power progress.']
 
       
